@@ -1,0 +1,68 @@
+﻿@model IEnumerable<EXAMEN1_JAUREGUI_URTECHO_PIERO_CARUSSO.Models.Order>
+
+@{
+    ViewData["Title"] = "Pedidos Pendientes";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h4 class="mb-0">
+            <i class="fas fa-clipboard-list text-primary me-2"></i>
+            Pedidos Pendientes de Confirmación
+        </h4>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Fecha de Pedido</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.OrderID</td>
+                            <td>
+                                <strong>@item.Customer?.CompanyName</strong><br />
+                                <small class="text-muted">@item.Customer?.ContactName</small>
+                            </td>
+                            <td>
+                                @(item.OrderDate.HasValue ? item.OrderDate.Value.ToString("dd/MM/yyyy") : "Sin fecha")
+                            </td>
+                            <td>
+                                @if (item.IsConfirmed.HasValue)
+                                {
+                                    @if (item.IsConfirmed.Value)
+                                    {
+                                        <span class="badge bg-success">Confirmado</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">No Confirmado</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.OrderID"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    Ver Detalle
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

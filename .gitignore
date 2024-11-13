@@ -1,0 +1,36 @@
+## Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+## SQL Server files
+*.mdf
+*.ldf
+*.ndf
+
+## Others
+*.swp
+*.*~
+project.lock.json

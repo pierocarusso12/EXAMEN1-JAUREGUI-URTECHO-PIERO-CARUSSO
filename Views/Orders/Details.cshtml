@@ -1,0 +1,160 @@
+﻿@model EXAMEN1_JAUREGUI_URTECHO_PIERO_CARUSSO.Models.Order
+
+@{
+    ViewData["Title"] = "Detalles del Pedido";
+    decimal total = Model.OrderDetails.Sum(od => od.Quantity * od.UnitPrice);
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-box text-primary me-2"></i>
+                        Pedido #@Model.OrderID
+                    </h4>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Volver
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-3">Información del Cliente</h5>
+                        <p class="mb-1"><strong>Empresa:</strong> @(Model.Customer?.CompanyName ?? "Sin empresa")</p>
+                        <p class="mb-1"><strong>Contacto:</strong> @(Model.Customer?.ContactName ?? "Sin contacto")</p>
+                        <p class="mb-1"><strong>Teléfono:</strong> @(Model.Customer?.Phone ?? "Sin teléfono")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted mb-3">Información del Pedido</h5>
+                        <p class="mb-1">
+                            <strong>Fecha:</strong>
+                            @(Model.OrderDate.HasValue ? Model.OrderDate.Value.ToString("dd/MM/yyyy") : "Sin fecha")
+                        </p>
+                        <p class="mb-1">
+                            <strong>Estado:</strong>
+                            @if (Model.IsConfirmed.HasValue)
+                            {
+                                @if (Model.IsConfirmed.Value)
+                                {
+                                    <span class="badge bg-success">Confirmado</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">No Confirmado</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                {
+                    <h5 class="text-muted mb-3">Productos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-end">Cantidad</th>
+                                    <th class="text-end">Precio Unit.</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>@(detail.Product?.ProductName ?? "Producto sin nombre")</td>
+                                        <td class="text-end">@detail.Quantity</td>
+                                        <td class="text-end">@detail.UnitPrice.ToString("C")</td>
+                                        <td class="text-end">@((detail.Quantity * detail.UnitPrice).ToString("C"))</td>
+                                    </tr>
+                                }
+                                <tr class="table-light fw-bold">
+                                    <td colspan="3" class="text-end">Total:</td>
+                                    <td class="text-end">@total.ToString("C")</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        No hay detalles disponibles para este pedido.
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-check-circle text-primary me-2"></i>
+                    Confirmación
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Confirm" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.OrderID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de Confirmación</label>
+                        <input type="datetime-local"
+                               name="confirmationDate"
+                               class="form-control"
+                               required
+                               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                               data-val="true"
+                               data-val-required="La fecha de confirmación es requerida" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <select name="isConfirmed" class="form-select" required>
+                            <option value="">Seleccione...</option>
+                            <option value="true">Confirmado</option>
+                            <option value="false">No Confirmado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Comentarios</label>
+                        <textarea name="comments" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            Guardar Confirmación
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                var submitButton = $(this).find('button[type="submit"]');
+                submitButton.prop('disabled', true)
+                    .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...');
+            });
+        });
+    </script>
+}
