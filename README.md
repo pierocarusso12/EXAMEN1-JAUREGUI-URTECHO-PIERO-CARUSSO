@@ -1,5 +1,7 @@
 # EXAMEN1-JAUREGUI-URTECHO-PIERO-CARUSSO
 
+##LINK PARA DESCARGAR EL PROYECTO EN ZIP CON LOS DOCS , SCRIPTS Y SOLUCION AQUI :
+
 Sistema de Contact Center para confirmar pedidos de la empresa Northwind.
 
 ## Tecnologías Utilizadas
